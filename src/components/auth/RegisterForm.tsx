@@ -54,6 +54,14 @@ export const RegisterForm = () => {
       if (validationErrors && typeof validationErrors === 'object') {
         const firstError = Object.values(validationErrors)[0];
         setError(String(firstError));
+      } else if (typeof validationErrors === 'string' && validationErrors.includes('Unique constraint failed')) {
+        if (validationErrors.includes('phone')) {
+          setError("This phone number is already registered. Please use a different phone number.");
+        } else if (validationErrors.includes('email')) {
+          setError("This email address is already registered. Please use a different email.");
+        } else {
+          setError("A user with these details already exists.");
+        }
       } else {
         setError(serverMessage || "Registration failed. Please check your inputs.");
       }
