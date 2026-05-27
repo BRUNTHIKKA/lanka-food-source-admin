@@ -1,0 +1,2 @@
+import { Search, Bell, Plus, User, HelpCircle, LogOut, KeyRound } from "lucide-react";
+// ... (rest of imports)

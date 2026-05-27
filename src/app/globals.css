@@ -1,0 +1,122 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --background: #FDFCFB;
+  --foreground: #1A1A1A;
+  --card: #FFFFFF;
+  --card-foreground: #1A1A1A;
+  --popover: #FFFFFF;
+  --popover-foreground: #1A1A1A;
+  --primary: #8B5E3C;
+  --primary-foreground: #FFFFFF;
+  --secondary: #F3F4F6;
+  --secondary-foreground: #1A1A1A;
+  --muted: #F3F4F6;
+  --muted-foreground: #6B7280;
+  --accent: #C2A878;
+  --accent-foreground: #1A1A1A;
+  --destructive: #EF4444;
+  --destructive-foreground: #FFFFFF;
+  --border: #E5E7EB;
+  --input: #E5E7EB;
+  --ring: #8B5E3C;
+  --radius: 0.75rem;
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #1A1A1A;
+  --sidebar-primary: #8B5E3C;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #FDFCFB;
+  --sidebar-accent-foreground: #8B5E3C;
+  --sidebar-border: #E5E7EB;
+  --sidebar-ring: #8B5E3C;
+}
+
+.dark {
+  --background: #0C0A09;
+  --foreground: #F5F5F4;
+  --card: #1C1917;
+  --card-foreground: #F5F5F4;
+  --popover: #1C1917;
+  --popover-foreground: #F5F5F4;
+  --primary: #D4A373;
+  --primary-foreground: #0C0A09;
+  --secondary: #1C1917;
+  --secondary-foreground: #F5F5F4;
+  --muted: #1C1917;
+  --muted-foreground: #A8A29E;
+  --accent: #E9D5A3;
+  --accent-foreground: #0C0A09;
+  --destructive: #7F1D1D;
+  --destructive-foreground: #F5F5F4;
+  --border: #292524;
+  --input: #292524;
+  --ring: #D4A373;
+  --sidebar: #0C0A09;
+  --sidebar-foreground: #F5F5F4;
+  --sidebar-primary: #D4A373;
+  --sidebar-primary-foreground: #0C0A09;
+  --sidebar-accent: #1C1917;
+  --sidebar-accent-foreground: #D4A373;
+  --sidebar-border: #292524;
+  --sidebar-ring: #D4A373;
+}
+
+@theme inline {
+  --font-sans: 'Geist', 'Geist Fallback';
+  --font-mono: 'Geist Mono', 'Geist Mono Fallback';
+  
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground transition-colors duration-300;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-white/5 backdrop-blur-md border border-white/10;
+  }
+  
+  .dark .glass {
+    @apply bg-black/20 backdrop-blur-md border border-white/5;
+  }
+}
