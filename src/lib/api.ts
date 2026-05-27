@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useAuthStore } from '@/store/authStore';
 
 const api = axios.create({
-  baseURL: '/api/backend', // Use the proxy to avoid CORS issues
+  baseURL: process.env.NEXT_PUBLIC_API_URL || '/api/backend', // Use the proxy to avoid CORS issues
 });
 
 // Request interceptor to add token

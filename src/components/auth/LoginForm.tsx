@@ -7,8 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuthStore } from "@/store/authStore";
 import { useRouter } from "next/navigation";
-
-import axios from "axios";
+import api from "@/lib/api";
 
 export const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -26,8 +25,8 @@ export const LoginForm = () => {
     setError("");
 
     try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/auth/admin/login`,
+      const response = await api.post(
+        `/auth/admin/login`,
         { email, password }
       );
 

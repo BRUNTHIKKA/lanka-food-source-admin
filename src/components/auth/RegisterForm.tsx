@@ -6,7 +6,7 @@ import { Mail, Lock, User, Loader2, ArrowRight, Phone, Shield } from "lucide-rea
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
-import axios from "axios";
+import api from "@/lib/api";
 
 export const RegisterForm = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -32,8 +32,8 @@ export const RegisterForm = () => {
     setError("");
 
     try {
-      await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/auth/admin/register`,
+      await api.post(
+        `/auth/admin/register`,
         {
           firstName: formData.firstName,
           lastName: formData.lastName,
