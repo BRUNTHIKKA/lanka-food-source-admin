@@ -11,6 +11,9 @@ api.interceptors.request.use(
     const token = useAuthStore.getState().token;
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+      console.log(`API Request: ${config.method?.toUpperCase()} ${config.url} [Token present]`);
+    } else {
+      console.warn(`API Request: ${config.method?.toUpperCase()} ${config.url} [Token MISSING]`);
     }
     return config;
   },

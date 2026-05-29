@@ -19,12 +19,16 @@ import { productService } from "@/services/productService";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Product, CreateProductDTO, UpdateProductDTO } from "@/types/product";
 import { toast } from "sonner";
+import { useAuthStore } from "@/store/authStore";
+import { useRouter } from "next/navigation";
 
 export default function ProductsPage() {
   const queryClient = useQueryClient();
   const [isFormOpen, setIsFormOpen] = React.useState(false);
   const [editingProduct, setEditingProduct] = React.useState<Product | null>(null);
   const [searchQuery, setSearchQuery] = React.useState("");
+  const { isAuthenticated } = useAuthStore();
+  const router = useRouter();
 
   // Fetch products
   const { data: products = [], isLoading, isError, refetch } = useQuery({
@@ -47,6 +51,7 @@ export default function ProductsPage() {
       setIsFormOpen(false);
     },
     onError: (error: any) => {
+      console.error("Create Product Error:", error.response?.data || error);
       toast.error(error.response?.data?.message || "Failed to create product");
     },
   });
@@ -62,6 +67,7 @@ export default function ProductsPage() {
       setEditingProduct(null);
     },
     onError: (error: any) => {
+      console.error("Update Product Error:", error.response?.data || error);
       toast.error(error.response?.data?.message || "Failed to update product");
     },
   });
@@ -78,37 +84,32 @@ export default function ProductsPage() {
     },
   });
 
-  const handleCreate = (data: CreateProductDTO) => {
-    const payload: CreateProductDTO = {
-      name: data.name,
-      description: data.description,
-      price: data.price,
-      stock: data.stock,
-      categoryId: data.categoryId,
-      unit: data.unit,
-      isAvailable: data.isAvailable,
-      discountPrice: data.discountPrice && data.discountPrice > 0 ? data.discountPrice : undefined,
+  const handleCreate = (data: any) => {
+    const payload = { 
+      ...data,
+      discountPrice: data.discountPrice && data.discountPrice > 0 ? data.discountPrice : null,
     };
+    console.log("Creating product with payload:", payload);
     createMutation.mutate(payload);
   };
 
   const handleUpdate = (data: any) => {
     if (editingProduct) {
-      const payload: UpdateProductDTO = {
-        name: data.name,
-        description: data.description,
-        price: data.price,
-        stock: data.stock,
-        categoryId: data.categoryId,
-        unit: data.unit,
-        isAvailable: data.isAvailable,
-        discountPrice: data.discountPrice && data.discountPrice > 0 ? data.discountPrice : undefined,
+      const payload = { 
+        ...data,
+        discountPrice: data.discountPrice && data.discountPrice > 0 ? data.discountPrice : null,
       };
+      console.log("Updating product with payload:", payload);
       updateMutation.mutate({ id: editingProduct.id, data: payload });
     }
   };
 
   const handleEditClick = (product: Product) => {
+    if (!isAuthenticated) {
+      toast.error("Please login to edit products");
+      router.push("/admin/login");
+      return;
+    }
     setEditingProduct(product);
     setIsFormOpen(true);
   };
@@ -152,6 +153,11 @@ export default function ProductsPage() {
             <Button 
               className="gap-2 shadow-lg shadow-primary/20 font-bold w-full"
               onClick={() => {
+                if (!isAuthenticated) {
+                  toast.error("Please login to add products");
+                  router.push("/admin/login");
+                  return;
+                }
                 setEditingProduct(null);
                 setIsFormOpen(true);
               }}

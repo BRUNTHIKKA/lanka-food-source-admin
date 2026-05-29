@@ -23,7 +23,7 @@ export default function Navbar() {
 
   const handleLogout = () => {
     logout();
-    router.push("/admin/login");
+    window.location.href = "/admin/login";
   };
 
   return (
@@ -74,7 +74,10 @@ export default function Navbar() {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-[220px] rounded-xl border-border/50 bg-background/80 backdrop-blur-xl p-2 shadow-xl">
             <DropdownMenuLabel className="px-3 py-2 text-xs text-muted-foreground font-normal">Account</DropdownMenuLabel>
-            <DropdownMenuItem className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm transition-colors cursor-pointer">
+            <DropdownMenuItem 
+              onClick={() => router.push("/admin/profile")}
+              className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm transition-colors cursor-pointer"
+            >
               <User className="h-4 w-4" />
               My Profile
             </DropdownMenuItem>

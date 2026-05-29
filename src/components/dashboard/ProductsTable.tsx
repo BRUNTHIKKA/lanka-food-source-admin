@@ -63,9 +63,15 @@ export function ProductsTable({ products, isLoading, onEdit, onDelete }: Product
             <TableRow key={product.id} className="group transition-colors border-border/50 hover:bg-muted/30">
               <TableCell className="pl-3 sm:pl-6 py-5">
                 <div className="flex items-center gap-2 sm:gap-4">
-                  <div className="p-2 rounded-lg bg-primary/10 text-primary border border-primary/20 shadow-sm hidden sm:flex">
-                    <Package className="w-5 h-5" />
-                  </div>
+                  {product.imageUrl ? (
+                    <div className="w-10 h-10 rounded-lg overflow-hidden border border-primary/20 shadow-sm hidden sm:flex">
+                      <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" />
+                    </div>
+                  ) : (
+                    <div className="p-2 rounded-lg bg-primary/10 text-primary border border-primary/20 shadow-sm hidden sm:flex">
+                      <Package className="w-5 h-5" />
+                    </div>
+                  )}
                   <div className="flex flex-col max-w-[140px] sm:max-w-[200px]">
                     <span className="font-semibold text-xs sm:text-sm text-foreground truncate">{product.name}</span>
                     <span className="text-[10px] sm:text-[11px] text-muted-foreground mt-0.5 line-clamp-1">{product.description}</span>

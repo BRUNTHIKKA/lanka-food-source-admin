@@ -119,4 +119,12 @@
   .dark .glass {
     @apply bg-black/20 backdrop-blur-md border border-white/5;
   }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }

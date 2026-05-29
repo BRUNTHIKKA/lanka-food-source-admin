@@ -34,6 +34,8 @@ export interface CreateProductDTO {
   stock: number;
   categoryId: string;
   unit: string;
+  imageUrl?: string;
+  imagePublicId?: string;
   isAvailable: boolean;
 }
 
@@ -45,5 +47,7 @@ export interface UpdateProductDTO {
   stock?: number;
   categoryId?: string;
   unit?: string;
+  imageUrl?: string;
+  imagePublicId?: string;
   isAvailable?: boolean;
 }

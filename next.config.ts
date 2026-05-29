@@ -5,7 +5,9 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/api/backend/:path*',
-        destination: 'https://lanka-food-source.onrender.com/api/:path*',
+        destination: process.env.NODE_ENV === 'production' 
+          ? 'https://lanka-food-source.onrender.com/api/:path*' 
+          : 'http://localhost:5000/api/:path*',
       },
     ];
   },
