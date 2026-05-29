@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation"
 import {
   LayoutDashboard,
   Image as ImageIcon,
-  Wand2,
+  ShoppingBag,
   FolderOpen,
   Settings,
   LogOut,
@@ -61,7 +61,7 @@ const items = [
   {
     title: "Orders",
     url: "/orders",
-    icon: Wand2,
+    icon: ShoppingBag,
   },
   {
     title: "Reviews",
