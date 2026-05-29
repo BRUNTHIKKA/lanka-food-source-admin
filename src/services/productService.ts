@@ -3,7 +3,7 @@ import { Product, CreateProductDTO, UpdateProductDTO, Category } from '@/types/p
 
 export const productService = {
   getProducts: async (): Promise<Product[]> => {
-    const response = await api.get('/products?showAll=true');
+    const response = await api.get('/products', { params: { showAll: 'true' } });
     if (Array.isArray(response.data)) {
       return response.data;
     }
