@@ -1,3 +1,4 @@
+"use client";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { 
   Users, 
@@ -11,18 +12,34 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Input } from "@/components/ui/input";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { UsersTable } from "@/components/dashboard/UsersTable";
+import * as React from "react";
+import api from "@/lib/api";
 
 export default function UsersPage() {
+  const [totalUsers, setTotalUsers] = React.useState<number>(0);
+
+  React.useEffect(() => {
+    const fetchTotal = async () => {
+      try {
+        const response = await api.get("/admin/stats");
+        // The endpoint returns an array of stats, "Total Users" is at index 0 or we can find it
+        const userStat = response.data.data.find((s: any) => s.name === "Total Users");
+        if (userStat) {
+          setTotalUsers(parseInt(userStat.value));
+        }
+      } catch (error) {
+        console.error("Fetch stats error:", error);
+      }
+    };
+    fetchTotal();
+  }, []);
+
   return (
     <DashboardLayout>
       <div className="space-y-8 animate-in fade-in duration-700">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2 text-primary mb-2">
-              <Users className="w-5 h-5" />
-              <span className="text-sm font-bold uppercase tracking-wider">Management</span>
-            </div>
-            <h1 className="text-2xl md:text-4xl font-black tracking-tight text-foreground uppercase">Manage Users</h1>
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">Manage Users</h1>
             <p className="text-muted-foreground mt-1 text-sm md:text-base font-manrope">Directory of all registered users and their platform status.</p>
           </div>
           <div className="flex items-center gap-2">
@@ -54,11 +71,11 @@ export default function UsersPage() {
           <CardHeader className="border-b border-border/50 bg-muted/20 px-6 py-6">
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="text-lg font-bold uppercase tracking-wide">All Registered Users</CardTitle>
-                <CardDescription className="text-xs font-manrope">Showing all users registered on the platform.</CardDescription>
+                <CardTitle className="text-xl font-bold">All Registered Users</CardTitle>
+                <CardDescription className="font-manrope">Showing all users registered on the platform.</CardDescription>
               </div>
               <div className="text-xs font-bold text-muted-foreground bg-muted px-3 py-1.5 rounded-full border border-border/50 italic">
-                Total: 342
+                Total: {totalUsers}
               </div>
             </div>
           </CardHeader>
