@@ -16,15 +16,55 @@ import { UsersTable } from "@/components/dashboard/UsersTable";
 import { UserForm } from "@/components/dashboard/UserForm";
 import * as React from "react";
 import { toast } from "sonner";
+import api from "@/lib/api";
 
-const stats = [
-  { name: "Total Users", value: "342", icon: Users, color: "text-purple-500", bg: "bg-purple-500/10", trend: "+12%" },
-  { name: "Total Images", value: "24,512", icon: ImageIcon, color: "text-blue-500", bg: "bg-blue-500/10", trend: "+8%" },
-  { name: "AI Generations", value: "8,942", icon: Zap, color: "text-amber-500", bg: "bg-amber-500/10", trend: "+18%" },
+interface Stat {
+  name: string;
+  value: string;
+  icon: any;
+  color: string;
+  bg: string;
+  trend: string;
+}
+
+const iconMap: Record<string, any> = {
+  Users: Users,
+  Package: Zap, // Using Zap as a fallback or if I want to map Package specifically
+  Star: ArrowUpRight, // Just as example
+};
+
+// Placeholder stats that will be overridden by API data
+const initialStats = [
+  { name: "Total Users", value: "0", icon: Users, color: "text-purple-500", bg: "bg-purple-500/10", trend: "0%" },
+  { name: "Total Products", value: "0", icon: ImageIcon, color: "text-blue-500", bg: "bg-blue-500/10", trend: "0%" },
+  { name: "Total Reviews", value: "0", icon: Zap, color: "text-amber-500", bg: "bg-amber-500/10", trend: "0%" },
 ];
 
 export default function DashboardPage() {
   const [isUserFormOpen, setIsUserFormOpen] = React.useState(false);
+  const [stats, setStats] = React.useState(initialStats);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await api.get("/admin/stats");
+        // Map the API response icons (strings) to Lucide icons
+        const mappedStats = response.data.data.map((stat: any) => ({
+          ...stat,
+          icon: iconMap[stat.icon] || Users
+        }));
+        setStats(mappedStats);
+      } catch (error: any) {
+        console.error("Fetch stats error:", error);
+        // Fallback to initial stats or show error
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStats();
+  }, []);
 
   const downloadReport = () => {
     // Simple CSV export implementation
@@ -48,6 +88,10 @@ export default function DashboardPage() {
     
     toast.success("Admin report downloaded successfully!");
   };
+  const [usersRefreshKey, setUsersRefreshKey] = React.useState(0);
+
+  const refreshUsers = () => setUsersRefreshKey(prev => prev + 1);
+
   return (
     <DashboardLayout>
       <div className="space-y-8 animate-in fade-in duration-700">
@@ -108,7 +152,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent className="p-0">
             <ScrollArea className="w-full whitespace-nowrap">
-              <UsersTable limit={4} />
+              <UsersTable limit={4} key={usersRefreshKey} />
               <ScrollBar orientation="horizontal" />
             </ScrollArea>
           </CardContent>
@@ -117,9 +161,7 @@ export default function DashboardPage() {
         <UserForm 
           isOpen={isUserFormOpen} 
           onClose={() => setIsUserFormOpen(false)}
-          onSuccess={() => {
-            // Optional: refresh user table if needed
-          }}
+          onSuccess={refreshUsers}
         />
       </div>
     </DashboardLayout>

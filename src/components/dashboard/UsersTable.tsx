@@ -9,6 +9,8 @@ import {
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import api from "@/lib/api";
+import { toast } from "sonner";
 import {
   Table,
   TableBody,
@@ -27,56 +29,53 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 export interface User {
-  id: number;
-  name: string;
+  id: string;
+  firstName: string;
+  lastName: string;
   email: string;
   phone: string;
   status: string;
-  joined: string;
-  initials: string;
+  role: string;
+  createdAt: string;
 }
 
-const recentUsers: User[] = [
-  { 
-    id: 1, 
-    name: "Alex Johnson", 
-    email: "alex.j@example.com", 
-    phone: "+1 234 567 890", 
-    status: "Active", 
-    joined: "2 hours ago",
-    initials: "AJ"
-  },
-  { 
-    id: 2, 
-    name: "Sarah Miller", 
-    email: "s.miller@user.com", 
-    phone: "+1 987 654 321", 
-    status: "Pending", 
-    joined: "5 hours ago",
-    initials: "SM"
-  },
-  { 
-    id: 3, 
-    name: "Michael Chen", 
-    email: "m.chen@design.io", 
-    phone: "+86 123 4567 89", 
-    status: "Active", 
-    joined: "1 day ago",
-    initials: "MC"
-  },
-  { 
-    id: 4, 
-    name: "Emily White", 
-    email: "emily.w@gallery.net", 
-    phone: "+44 20 1234 5678", 
-    status: "Active", 
-    joined: "2 days ago",
-    initials: "EW"
-  },
-];
-
 export function UsersTable({ limit }: { limit?: number }) {
-  const displayUsers = limit ? recentUsers.slice(0, limit) : recentUsers;
+  const [users, setUsers] = React.useState<User[]>([]);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await api.get("/admin/users");
+        setUsers(response.data.data);
+      } catch (error: any) {
+        console.error("Fetch users error:", error);
+        toast.error("Failed to load users");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  const displayUsers = limit ? users.slice(0, limit) : users;
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (users.length === 0) {
+    return (
+      <div className="text-center p-8 text-muted-foreground">
+        No users found.
+      </div>
+    );
+  }
 
   return (
     <div className="w-full">
@@ -97,12 +96,12 @@ export function UsersTable({ limit }: { limit?: number }) {
                 <div className="flex items-center gap-4">
                   <Avatar className="h-10 w-10 border border-border shadow-sm group-hover:scale-105 transition-transform duration-300">
                     <AvatarFallback className="bg-primary/10 text-primary font-bold text-xs">
-                      {user.initials}
+                      {user.firstName?.[0] || '?'}{user.lastName?.[0] || ''}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col">
-                    <span className="font-semibold text-sm text-foreground">{user.name}</span>
-                    <span className="text-[11px] text-muted-foreground mt-0.5">ID: {user.id}092{user.id}</span>
+                    <span className="font-semibold text-sm text-foreground">{user.firstName} {user.lastName}</span>
+                    <span className="text-[11px] text-muted-foreground mt-0.5">Role: {user.role}</span>
                   </div>
                 </div>
               </TableCell>
@@ -121,7 +120,7 @@ export function UsersTable({ limit }: { limit?: number }) {
                   variant="secondary" 
                   className={cn(
                     "font-bold text-[10px] border-none px-2.5 py-0.5 rounded-full select-none",
-                    user.status === "Active" 
+                    user.status === "ACTIVE" 
                       ? "bg-green-500/10 text-green-500" 
                       : "bg-amber-500/10 text-amber-500"
                   )}
@@ -130,7 +129,7 @@ export function UsersTable({ limit }: { limit?: number }) {
                 </Badge>
               </TableCell>
               <TableCell className="text-muted-foreground text-xs font-medium py-5 hidden sm:table-cell">
-                {user.joined}
+                {new Date(user.createdAt).toLocaleDateString()}
               </TableCell>
               <TableCell className="text-right pr-6 py-5">
                 <DropdownMenu>
